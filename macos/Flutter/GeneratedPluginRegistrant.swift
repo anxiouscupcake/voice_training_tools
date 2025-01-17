@@ -5,8 +5,8 @@
 import FlutterMacOS
 import Foundation
 
-import mic_stream
+import record_darwin
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
-  MicStreamPlugin.register(with: registry.registrar(forPlugin: "MicStreamPlugin"))
+  RecordPlugin.register(with: registry.registrar(forPlugin: "RecordPlugin"))
 }

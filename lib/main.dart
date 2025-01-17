@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:voice_training_tools/constants.dart';
+import 'package:voice_training_tools/recording_model.dart';
+import 'package:voice_training_tools/spectrogram_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(Provider(
+    create: (_) => RecordingModel(),
+    child: const VoiceTrainingToolsApp(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class VoiceTrainingToolsApp extends StatelessWidget {
+  const VoiceTrainingToolsApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +27,7 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: const Text(appName),
         ),
+        body: SpectrogramScreen(),
       ),
     );
   }
