@@ -1,9 +1,11 @@
-import 'package:flutter/material.dart';
+import 'dart:math';
 import 'dart:typed_data';
+import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import 'package:voice_training_tools/recording_model.dart';
 import 'package:fftea/fftea.dart';
+import 'package:voice_training_tools/spectrogram_painter.dart';
 
 class SpectrogramScreen extends StatefulWidget {
   const SpectrogramScreen({super.key});
@@ -13,6 +15,9 @@ class SpectrogramScreen extends StatefulWidget {
 }
 
 class _SpectrogramScreenState extends State<SpectrogramScreen> {
+  static const chunkSize = 1024;
+  final stft = STFT(chunkSize, Window.hanning(chunkSize));
+
   late RecordingModel recordingModel;
 
   @override
@@ -32,8 +37,19 @@ class _SpectrogramScreenState extends State<SpectrogramScreen> {
                   stream: snapshot.data,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      return Center(
-                        child: Text('Data length: ${snapshot.data!.length}'),
+                      List<double> audio =
+                          List.from(snapshot.data!.map((i) => i / 255));
+
+                      final spectrogram = <Float64List>[];
+                      stft.run(audio, (Float64x2List freq) {
+                        spectrogram.add(freq.discardConjugates().magnitudes());
+                      });
+
+                      final double outputDimension =
+                          sqrt(spectrogram.first.length);
+                      return CustomPaint(
+                        size: Size(200, 200),
+                        painter: SpectrogramPainter(spectrogram),
                       );
                     } else {
                       return Center(
