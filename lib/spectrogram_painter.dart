@@ -15,9 +15,11 @@ class SpectrogramPainter extends CustomPainter {
       return;
     }
 
+    // canvas.translate(0, -100);
+
     Paint paint = Paint();
     paint.isAntiAlias = false;
-    paint.strokeWidth = 1;
+    paint.strokeWidth = 2;
     paint.color = Color.fromARGB(255, 0, 132, 214);
 
     Uint8List pixels = Uint8List(spectrogram.length * spectrogram.first.length);
@@ -25,28 +27,20 @@ class SpectrogramPainter extends CustomPainter {
       pixels[i] = 0;
     }
 
-    // for (var chunk in spectrogram) {
-    //   // canvas.drawRawPoints(
-    //   //     PointMode.points, Float32List.sublistView(chunk), paint);
-
-    //   for (var pixel in chunk) {
-    //     pixelsList.add(pixel as Uint8);
-    //   }
+    // if (kDebugMode) {
+    //   print(
+    //       "Spectrogram has ${spectrogram.length} chunks, ${spectrogram[0].length} bytes each");
     // }
 
-    late Image img;
-    Random r = Random();
-    pixels =
-        Uint8List.fromList(List<int>.generate(10000, (i) => r.nextInt(255)));
-    decodeImageFromPixels(
-      pixels,
-      100,
-      100,
-      PixelFormat.rgba8888,
-      (result) => img = result,
-      allowUpscaling: true,
-    );
-    canvas.drawImage(img, Offset.zero, paint);
+    for (var i = 0; i < spectrogram.length; i++) {
+      for (var j = 0; j < spectrogram[i].length; j++) {
+        var chunk = spectrogram[i];
+        paint.color = Color.fromARGB(255, 0, 0, (chunk[j] * 255.0).floor());
+        var point = List<Offset>.filled(
+            1, Offset(i.floorToDouble(), j.floorToDouble()));
+        canvas.drawPoints(PointMode.points, point, paint);
+      }
+    }
   }
 
   @override

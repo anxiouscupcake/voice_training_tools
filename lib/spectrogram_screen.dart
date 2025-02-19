@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
@@ -42,24 +41,23 @@ class _SpectrogramScreenState extends State<SpectrogramScreen> {
 
                       final spectrogram = <Float64List>[];
                       stft.run(audio, (Float64x2List freq) {
-                        spectrogram.add(freq.discardConjugates().magnitudes());
+                        spectrogram.add(freq.magnitudes());
                       });
 
-                      final double outputDimension =
-                          sqrt(spectrogram.first.length);
                       return CustomPaint(
-                        size: Size(200, 200),
-                        painter: SpectrogramPainter(spectrogram),
+                        size: Size(16, 1024),
+                        isComplex: true,
+                        foregroundPainter: SpectrogramPainter(spectrogram),
                       );
                     } else {
                       return Center(
-                        child: CircularProgressIndicator(),
+                        child: const Text('Waiting for input...'),
                       );
                     }
                   });
             } else {
               return Center(
-                child: Text(snapshot.error.toString()),
+                child: CircularProgressIndicator(),
               );
             }
           }),
